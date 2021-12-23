@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+package services;
+
+option go_package = "github.com/dysnix/predictkube-proto/external/proto/services";
+
+import "proto/commonproto/ping_pong.proto";
+import "proto/commonproto/metric_value.proto";
+import "proto/events/provider.proto";
+import "proto/enums/provider.proto";
+import "google/protobuf/duration.proto";
+
+service ProviderService {
+  rpc Ping(ReqPing) returns (ResPong) {}
+  rpc GetMetrics(ReqGetMetrics) returns (ResGetMetrics) {}
+  rpc GetRawQueryMetrics(ReqRawQueryMetrics) returns (ResRawQueryMetrics) {}
+}
+
+message ReqPing {
+  commonproto.Ping ping = 1;
+}
+
+message ResPong {
+  commonproto.Pong pong = 1;
+}
+
+message ReqGetMetrics {
+  enums.ResourceType resource = 1;
+  string name = 2;
+  string namespace = 3;
+  string cluster = 4;
+  google.protobuf.Duration stepDuration = 5;
+  google.protobuf.Duration timeWindow = 6;
+  oneof Query {
+    events.History history = 7;
+  }
+}
+
+message ResGetMetrics {
+  repeated commonproto.MetricValue metric_values = 1;
+}
+
+message ReqRawQueryMetrics {
+  string name = 1;
+  string namespace = 2;
+  string cluster = 3;
+  google.protobuf.Duration stepDuration = 4;
+  events.RawQuery raw = 5;
+}
+
+message ResRawQueryMetrics {
+  repeated commonproto.RawMetricValue metric_values = 1;
+}

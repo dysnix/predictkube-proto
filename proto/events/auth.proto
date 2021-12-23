@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package events;
+
+option go_package = "github.com/dysnix/predictkube-proto/external/proto/events";
+
+import "proto/enums/provider.proto";
+
+message Client {
+  string name = 1; // @gotags: validate:"ascii"
+  string public_id = 2; // @gotags: validate:"omitempty,uuid_if_not_empty"
+  bytes rsa_key = 4;
+  string api_key = 5; // @gotags: validate:"omitempty,jwt_if_not_empty"
+  string email = 6; // @gotags: validate:"omitempty,email_if_not_empty"
+  string password = 7; // @gotags: validate:"omitempty,ascii"
+  string hubspot_id = 8;
+  enums.KeyType key_type = 9;
+  repeated Cluster clusters = 10;
+}
+
+message Cluster {
+  string name = 1; // @gotags: validate:"ascii"
+  string cluster_id = 2; // @gotags: validate:"omitempty,uuid_if_not_empty"
+  repeated Resource resources = 3;
+}
+
+message Resource {
+  string name = 1; // @gotags: validate:"ascii"
+  string namespace = 2; // @gotags: validate:"ascii"
+  enums.ResourceType kind = 3; // @gotags: validate:"required"
+  string cluster_id = 4; // @gotags: validate:"omitempty,uuid_if_not_empty"
+}

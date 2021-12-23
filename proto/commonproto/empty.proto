@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+package commonproto;
+
+option go_package = "github.com/dysnix/predictkube-proto/external/proto/commonproto";
+
+message Empty {}

@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package services;
+
+option go_package = "github.com/dysnix/predictkube-proto/external/proto/services";
+
+import "proto/commonproto/metric_value.proto";
+
+service MlEngineService {
+  rpc GetPredictMetric(ReqGetPredictMetric) returns (ResGetPredictMetric) {}
+}
+
+message ReqGetPredictMetric {
+  uint64 forecast_horizon = 1;
+  repeated commonproto.Item observations = 2;
+}
+
+message ResGetPredictMetric {
+  int64 result_metric = 1;
+}

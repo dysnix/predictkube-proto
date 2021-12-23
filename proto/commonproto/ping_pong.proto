@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package commonproto;
+
+option go_package = "github.com/dysnix/predictkube-proto/external/proto/commonproto";
+
+import "google/protobuf/timestamp.proto";
+
+message Ping {
+  google.protobuf.Timestamp time = 1;
+}
+
+message Pong {
+  google.protobuf.Timestamp next = 1;
+  string message = 2;
+}

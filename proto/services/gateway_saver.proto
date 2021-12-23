@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package services;
+
+option go_package = "github.com/dysnix/predictkube-proto/external/proto/services";
+
+import "proto/commonproto/metric_value.proto";
+import "proto/enums/provider.proto";
+import "google/protobuf/duration.proto";
+
+service GatewaySaverService {
+  rpc GetMetricsOffset(ReqGetMetricsOffset) returns (ResGetMetricsOffset) {}
+  rpc SendMetrics(ReqSendMetrics) returns (ResSendMetrics) {}
+ // rpc ForecastMetrics(ReqForecastMetrics) returns (ResForecastMetrics) {}
+}
+
+message Header {
+  string cluster_id = 1; // @gotags: faker:"uuidHyphenated"
+}
+
+message ForecastHeader {
+  enums.ResourceType resource = 1;
+  string name = 2;
+  string namespace = 3;
+  google.protobuf.Duration forecastPeriod = 4;
+}
+
+message ReqSendMetrics {
+  Header header = 1;
+  uint64 metrics_offset = 2; // @gotags: faker:"unixTime"
+  repeated commonproto.MetricValue metric_values = 3; // @gotags: faker:"metricsSlice"
+}
+
+message ReqGetMetricsOffset {
+  Header header = 1;
+}
+
+message ResGetMetricsOffset {
+  uint64 current_offset = 1;
+}
+
+message ResSendMetrics {}
+
+message ReqForecastMetrics {
+  Header header = 1;
+  ForecastHeader forecast_header = 2;
+}
+
+//message ResForecastMetrics {
+//  map<enums.MetricsType>
+//}

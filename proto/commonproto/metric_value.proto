@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package commonproto;
+
+option go_package = "github.com/dysnix/predictkube-proto/external/proto/commonproto";
+
+import "proto/enums/provider.proto";
+import "google/protobuf/timestamp.proto";
+
+message MetricValue {
+  enums.MetricsType metric_type = 1; // faker:"oneof: 0 1 2 3 4 5 6"
+  enums.ValueType prometheus_response_type = 2; // faker:"oneof: 0 1 2 3"
+  repeated Item values = 3;
+}
+
+message RawMetricValue {
+  string name = 1;
+  enums.ValueType prometheus_response_type = 2;
+  repeated Item values = 3;
+}
+
+message Item {
+  google.protobuf.Timestamp timestamp = 1;
+  double value = 2; // faker:"long"
+  string metric_name = 3; // faker:"word"
+}

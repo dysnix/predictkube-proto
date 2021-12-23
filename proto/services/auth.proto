@@ -1,0 +1,184 @@
+syntax = "proto3";
+
+package services;
+
+option go_package = "github.com/dysnix/predictkube-proto/external/proto/services";
+
+import "proto/events/auth.proto";
+import "google/protobuf/duration.proto";
+import "proto/enums/auth.proto";
+
+service AuthService {
+  // TODO: add methods for get lists of any objects with optional filters and pagination...
+  // client API
+  rpc CreateClient(ReqCreateClient) returns (ResCreateClient) {}
+  rpc UpdateClient(ReqUpdateClient) returns (ResUpdateClient) {}
+  rpc DeleteClient(ReqDeleteClient) returns (ResDeleteClient) {}
+  rpc GetClientData(ReqGetClientData) returns (ResGetClientData) {}
+  // cluster API
+  rpc AddCluster(ReqAddCluster) returns (ResAddCluster) {}
+  rpc UpdateCluster(ReqUpdateCluster) returns (ResUpdateCluster) {}
+  rpc DeleteCluster(ReqDeleteCluster) returns (ResDeleteCluster) {}
+  rpc GetCluster(ReqGetCluster) returns (ResGetCluster) {}
+  // resource API
+  rpc AddResource(ReqAddResource) returns (ResAddResource) {}
+  rpc UpdateResource(ReqUpdateResource) returns (ResUpdateResource) {}
+  rpc DeleteResource(ReqDeleteResource) returns (ResDeleteResource) {}
+  rpc GetResources(ReqGetResources) returns (ResGetResources) {}
+  // token API
+  rpc GenerateToken(ReqGenerateToken) returns (ResGenerateToken) {}
+  rpc RefreshToken(ReqRefreshToken) returns (ResRefreshToken) {}
+  rpc InvalidateAllTokens(ReqInvalidateAllTokens) returns (ResInvalidateAllTokens) {}
+}
+
+message ReqCreateClient {
+  events.Client client = 1;
+}
+
+message ResCreateClient {
+  string public_id = 1;
+}
+
+message ReqInvalidateAllTokens {
+  oneof ClientData {
+    string name = 1;
+    string public_id = 2;
+    string cluster_id = 3;
+  }
+  uint32 bites = 4;
+}
+
+message ResInvalidateAllTokens {
+  bytes rsa_key = 1;
+}
+
+message ReqUpdateClient {
+  events.Client client = 1;
+}
+
+message ResUpdateClient {}
+
+message ReqDeleteClient {
+  oneof ClientData {
+    string name = 1;
+    string public_id = 2;
+    string cluster_id = 3;
+    string api_key = 4;
+  }
+  enums.DeleteType delete_type = 5;
+}
+
+message ResDeleteClient {}
+
+message ReqGenerateToken {
+  oneof ClientData {
+    string name = 1;
+    string public_id = 2;
+    string cluster_id = 3;
+  }
+  google.protobuf.Duration ext_duration = 4;
+}
+
+message ResGenerateToken {
+  string token = 1;
+}
+
+message ReqRefreshToken {
+  oneof ClientData {
+    string name = 1;
+    string public_id = 2;
+    string cluster_id = 3;
+  }
+  string token = 4; // @gotags: validate:"jwt"
+  google.protobuf.Duration ext_duration = 5;
+}
+
+message ResRefreshToken {
+  string token = 1;
+}
+
+message ReqGetClientData {
+  oneof ClientData {
+    string name = 1;
+    string public_id = 2;
+    string cluster_id = 3;
+    string api_key = 4;
+  }
+}
+
+message ResGetClientData {
+  events.Client client = 1;
+}
+
+message ReqAddCluster {
+  events.Cluster cluster = 1;
+  string client_name = 2;
+}
+
+message ResAddCluster {}
+
+message ReqUpdateCluster {
+  events.Cluster cluster = 1;
+  string client_name = 2;
+}
+
+message ResUpdateCluster {}
+
+message ReqDeleteCluster {
+  oneof ClusterData {
+    string name = 1;
+    string cluster_id = 2;
+  }
+  enums.DeleteType delete_type = 3;
+}
+
+message ResDeleteCluster {}
+
+message ReqGetCluster {
+  oneof ClusterData {
+    string name = 1;
+    string cluster_id = 2;
+  }
+}
+
+message ResGetCluster {
+  events.Cluster cluster = 1;
+}
+
+message ReqAddResource {
+  events.Resource resource = 1;
+}
+
+message ResAddResource {}
+
+message ReqUpdateResource {
+  events.Resource resource = 1;
+}
+
+message ResUpdateResource {}
+
+message ReqDeleteResource {
+  message ResourceData {
+    string name = 1; // @gotags: validate:"required,ascii"
+    string cluster_id = 2; // @gotags: validate:"required,ascii"
+    string namespace = 3; // @gotags: validate:"required,ascii"
+  }
+
+  ResourceData target_ref = 4; // @gotags: validate:"required"
+
+  enums.DeleteType delete_type = 5; // @gotags: validate:"required"
+}
+
+message ResDeleteResource {}
+
+message ReqGetResources {
+  oneof ResourceData {
+    string name = 1;
+    string cluster_id = 2;
+    string namespace = 3;
+  }
+}
+
+message ResGetResources {
+  repeated events.Resource resources = 1;
+}
