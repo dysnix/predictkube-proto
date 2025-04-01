@@ -2,7 +2,7 @@ module github.com/dysnix/predictkube-proto
 
 go 1.22
 
-toolchain go1.22.1
+toolchain go1.24.2
 
 require (
 	google.golang.org/grpc v1.67.1
